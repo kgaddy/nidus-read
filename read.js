@@ -53,8 +53,10 @@ var Log = (function () {
 	}
 	
 	Log.prototype.GetCurrentErrors = function(response){
+		
 		connection.query('select id,code,msg,ipAddress,refId,date,viewDate from error where viewDate is null', [], function(err, results) {
             response.writeHead(200, {'Content-Type': 'application/json'});
+			console.log(results);
             var str = JSON.stringify(results);
 			response.write(str);   
             response.end();
