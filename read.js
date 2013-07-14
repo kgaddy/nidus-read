@@ -49,15 +49,27 @@ var Log = (function() {
 		var s = code;
 		while (s.charAt(0) === '/')
 			s = s.substr(1);
-
-		var values = [s];
-		connection.query('select l.id, l.date, l.code, l.ipAddress,l.value, l.refId from log as l where l.code=?', values, function(err, results) {
+		var split = s.split('?');
+		var values = [split[0]];
+		connection.query('select l.id, l.date, l.code, l.ipAddress,l.value, l.refId, l.description, l.value from log as l where l.code=?', values, function(err, results) {
 			response.writeHead(200, {
 				'Content-Type': 'application/json'
 			});
+			var output='';
 			var str = JSON.stringify(results);
-			response.write(str);
+			//now clear out object
+			objJSON = [];
+			if (output) {
+				if (output === 'json') {
+					response.write(str);
+				} else {
+					response.write('logdata' + '(' + str + ')');
+				}
+			} else {
+				response.write('logdata' + '(' + str + ')');
+			}
 			response.end();
+
 		});
 	}
 
