@@ -6,9 +6,7 @@ var config = require('./config.js'),
 
 var server = http.createServer(function(request, response) {
 	var urlObj = url.parse(request.url, true);
-	//console.log(urlObj.path);
-
-	request.addListener('end', function() {
+	request.on('end', function() {
 		var log = new Log();
 
 		switch (urlObj.path) {
@@ -19,10 +17,13 @@ var server = http.createServer(function(request, response) {
 				log.GetCurrentErrors(response);
 				break;
 			default:
+				console.log(urlObj.path)
 				log.GetLog(urlObj.path, response);
 				break;
 		}
 	});
+	request.resume();
+
 }).listen(8002);
 console.log('Read Server Started:8002')
 
@@ -51,11 +52,12 @@ var Log = (function() {
 			s = s.substr(1);
 		var split = s.split('?');
 		var values = [split[0]];
+		console.log(code);
 		connection.query('select l.id, l.date, l.code, l.ipAddress,l.value, l.refId, l.description, l.value from log as l where l.code=?', values, function(err, results) {
 			response.writeHead(200, {
 				'Content-Type': 'application/json'
 			});
-			var output='';
+			var output = '';
 			var str = JSON.stringify(results);
 			//now clear out object
 			objJSON = [];
