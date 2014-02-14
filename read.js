@@ -51,13 +51,12 @@ var Log = (function() {
 		var codeValues = code.substring(1);
 		var values = codeValues.split('/');
 
-		var sqlQuery = 'select l.id, l.date, l.code, l.ipAddress,l.value, l.refId, l.description, l.value from log as l where l.code=?';
+		var sqlQuery = 'select l.id, l.date, l.code, l.ipAddress,l.value, l.refId, l.description, l.value from log as l where l.code=? order by l.date';
 
 		if (values[1]) {
 			values[1] = parseInt(values[1], 10);
-			sqlQuery = 'select l.id, l.date, l.code, l.ipAddress,l.value, l.refId, l.description, l.value from log as l where l.code=? limit ?';
+			sqlQuery = 'select l.id, l.date, l.code, l.ipAddress,l.value, l.refId, l.description, l.value from log as l where l.code=? order by l.date limit ?';
 		}
-
 
 		connection.query(sqlQuery, values, function(err, results) {
 			response.writeHead(200, {
